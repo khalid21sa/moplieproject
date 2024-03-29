@@ -19,9 +19,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.blue[200]!,
-            Colors.blue[200]!,
-            Colors.blue[200]!,
+            Colors.green[500]!,
+            Colors.green[300]!,
+            Colors.green[300]!,
           ],
         ),
         boxShadow: [
