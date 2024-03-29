@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'BotomNavigationBar.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // Initialize Firebase
   runApp(MyApp());
 }
 
@@ -55,9 +59,14 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         child: Center(
-          child: Text(
-            'Selected Index: $_selectedIndex',
-            style: TextStyle(fontSize: 24.0),
+          child: ElevatedButton(
+            onPressed: () {
+              sendMessage(context);
+            },
+            child: Text(
+              'Send Message to Database',
+              style: TextStyle(fontSize: 20),
+            ),
           ),
         ),
       ),
@@ -66,5 +75,24 @@ class _HomePageState extends State<HomePage> {
         onItemTapped: _onItemTapped,
       ),
     );
+  }
+
+  Future<void> sendMessage(BuildContext context) async {
+    try {
+      DatabaseReference messageRef = FirebaseDatabase.instance.reference().child('messages');
+      String? messageId = messageRef.push().key;
+      await messageRef.child(messageId!).set({
+        'text': 'Start work bro',
+        'timestamp': ServerValue.timestamp,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Message sent successfully')),
+      );
+    } catch (e) {
+      print('Error sending message: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to send message')),
+      );
+    }
   }
 }
