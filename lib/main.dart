@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Reservations App',
+      title: 'Padel App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: Colors.transparent,
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               sendMessage(context);
             },
-            child: Text(
+            child: const Text(
               'Send Message to Database',
               style: TextStyle(fontSize: 20),
             ),
@@ -86,12 +86,12 @@ class _HomePageState extends State<HomePage> {
         'timestamp': ServerValue.timestamp,
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Message sent successfully')),
+        const SnackBar(content: Text('Message sent successfully')),
       );
     } catch (e) {
       print('Error sending message: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to send message')),
+        const SnackBar(content: Text('Failed to send message')),
       );
     }
   }
