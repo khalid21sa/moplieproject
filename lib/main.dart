@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-
 import 'BotomNavigationBar.dart';
 
 void main() async {
@@ -14,11 +13,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Padel App',
+      title: 'Genuis Group Appliction',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reservations App'),
+        title: Text('Padel App'),
         backgroundColor: Colors.blue, // Change app bar color here
       ),
       backgroundColor: Colors.transparent,

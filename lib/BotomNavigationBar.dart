@@ -24,7 +24,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             Colors.green[300]!,
           ],
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 10,
@@ -42,7 +42,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         unselectedFontSize: 12.0,
         iconSize: 28.0,
         backgroundColor: Colors.blue,
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
