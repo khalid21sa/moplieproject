@@ -15,15 +15,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.green[500]!,
-            Colors.green[300]!,
-            Colors.green[300]!,
-          ],
-        ),
+
         boxShadow: const [
           BoxShadow(
             color: Colors.black12,
