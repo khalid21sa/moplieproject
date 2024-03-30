@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Genuis Group Appliction',
+      title: 'Genius Group Application', // Fixed typo in title
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -65,36 +65,27 @@ class _HomePageState extends State<HomePage> {
             tileMode: TileMode.clamp,
           ),
         ),
-<<<<<<< HEAD
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'image/s1.webp',
-              width: 500, // Adjust width as needed
-              height: 500, // Adjust height as needed
-=======
         child: Center(
-          child: ElevatedButton(
-            onPressed: () {
-              sendMessage(context);
-            },
-            child: const Text(
-              'Send Message to Database',
-              style: TextStyle(fontSize: 20),
->>>>>>> 0d9bf24f170866f648fc9e4b5a91b8e5c1d5b740
-            ),
-            SizedBox(height: 20), // Add spacing between image and button
-            ElevatedButton(
-              onPressed: () {
-                sendMessage(context);
-              },
-              child: Text(
-                'Send Message to Database',
-                style: TextStyle(fontSize: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'image/s1.webp',
+                width: 500, // Adjust width as needed
+                height: 500, // Adjust height as needed
               ),
-            ),
-          ],
+              SizedBox(height: 20), // Add spacing between image and button
+              ElevatedButton(
+                onPressed: () {
+                  sendMessage(context);
+                },
+                child: Text(
+                  'Send Message to Database',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavBar(
