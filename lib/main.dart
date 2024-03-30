@@ -41,6 +41,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // this is the menu in the app bar I will build it later @LAITH
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {
+            // Action for the icon goes here.
+          },
+        ),
         title: Text('Padel App'),
         backgroundColor: Colors.blue, // Change app bar color here
       ),
