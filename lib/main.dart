@@ -58,16 +58,25 @@ class _HomePageState extends State<HomePage> {
             tileMode: TileMode.clamp,
           ),
         ),
-        child: Center(
-          child: ElevatedButton(
-            onPressed: () {
-              sendMessage(context);
-            },
-            child: Text(
-              'Send Message to Database',
-              style: TextStyle(fontSize: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'image/s1.webp',
+              width: 500, // Adjust width as needed
+              height: 500, // Adjust height as needed
             ),
-          ),
+            SizedBox(height: 20), // Add spacing between image and button
+            ElevatedButton(
+              onPressed: () {
+                sendMessage(context);
+              },
+              child: Text(
+                'Send Message to Database',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavBar(
