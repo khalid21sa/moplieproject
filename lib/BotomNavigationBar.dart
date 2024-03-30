@@ -24,7 +24,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             Colors.green[300]!,
           ],
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 10,
@@ -36,20 +36,24 @@ class _BottomNavBarState extends State<BottomNavBar> {
         type: BottomNavigationBarType.fixed,
         currentIndex: widget.selectedIndex,
         onTap: widget.onItemTapped,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.amber,
+        unselectedItemColor: Colors.white,
         selectedFontSize: 14.0,
         unselectedFontSize: 12.0,
         iconSize: 28.0,
-        backgroundColor: Colors.transparent,
-        items: <BottomNavigationBarItem>[
+        backgroundColor: Colors.blue,
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.event),
-            label: 'Reservations',
+            label: 'Booking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sports_tennis),
+            label: 'Play',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
