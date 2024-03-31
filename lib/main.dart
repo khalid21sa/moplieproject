@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
       DatabaseReference messageRef = FirebaseDatabase.instance.reference().child('messages');
       String? messageId = messageRef.push().key;
       await messageRef.child(messageId!).set({
-        'text': 'Start work bro',
+        'text': 'Second try',
         'timestamp': ServerValue.timestamp,
       });
       ScaffoldMessenger.of(context).showSnackBar(
