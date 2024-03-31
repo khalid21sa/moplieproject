@@ -14,6 +14,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: widget.selectedIndex,
