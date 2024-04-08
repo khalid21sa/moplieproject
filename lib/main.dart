@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:moplieproject/pages/booking_page.dart';
+import 'package:moplieproject/pages/data/DatabaseHelper.dart';
+import 'package:moplieproject/pages/data/list.dart';
 import 'package:moplieproject/pages/home_page.dart';
 import 'package:moplieproject/pages/play_page.dart';
 import 'package:moplieproject/pages/profile_page.dart';
@@ -11,7 +13,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final databaseRef = FirebaseDatabase.instance.reference();
+  var lll=fortList;
   databaseRef.child('messages').push().set({'message': 'HelloWorld'});
+  DatabaseHelper.createFirebaseRealtimeDBWithUniqueIDs('padlecourt', lll);
   runApp(MyApp());
 }
 

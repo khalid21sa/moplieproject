@@ -3,7 +3,7 @@ List<Map<String,dynamic>> fortList = [
     'name':'Muscat Hills',
     'image':'f1.jpg',
     'place':'Muscat',
-    'price':20,
+    'ticket_price':20,
   },
   {
     'name':'Big Wall',

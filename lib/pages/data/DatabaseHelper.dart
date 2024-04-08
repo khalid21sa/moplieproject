@@ -43,7 +43,7 @@ class DatabaseHelper {
   static void readFirebaseRealtimeDBMain(
       Function(List<court>) castleListCallback) {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
-    databaseReference.child("castles").onValue.listen((castleDataJson) {
+    databaseReference.child("padlecourt").onValue.listen((castleDataJson) {
       if (castleDataJson.snapshot.exists) {
         CourtData castleData;
         court castle;
