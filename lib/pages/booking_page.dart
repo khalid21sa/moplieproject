@@ -16,7 +16,7 @@ class Booking extends StatelessWidget {
             imageCaption(caption: "Laith"),
             SizedBox(height: 20),
             ImageDecoration(imagePath: "s1.webp"),
-            imageCaption(caption: "Laith"),
+            imageCaption(caption: "Hamood"),
             SizedBox(height: 20),
             ImageDecoration(imagePath: "f5.jpeg"),
             imageCaption(caption: "Laith"),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moplieproject/pages/appStyle.dart';
 
 
 class imageCaption extends StatelessWidget {
@@ -14,7 +15,9 @@ class imageCaption extends StatelessWidget {
       padding: EdgeInsets.all(0.8),
       child: Text(
         caption,
-        textAlign: TextAlign.center, // Align the text in the center of the container
+        textAlign: TextAlign.center,
+        style: AppStyles.headlineStyle1,// Align the text in the center of the container
+        /*
         style: TextStyle(
           fontSize: 30.0,
           fontWeight: FontWeight.w600, // Set font weight to semi-bold
@@ -29,7 +32,8 @@ class imageCaption extends StatelessWidget {
             ),
           ],
         ),
-      )
+        */
+      ),
     );
   }
 }
