@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.amber,
-        unselectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
         selectedFontSize: 14.0,
         unselectedFontSize: 12.0,
         iconSize: 28.0,
