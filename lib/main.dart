@@ -1,35 +1,51 @@
+// main.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'BotomNavigationBar.dart';
+import 'package:moplieproject/pages/booking_page.dart';
+import 'package:moplieproject/pages/home_page.dart';
+import 'package:moplieproject/pages/play_page.dart';
+import 'package:moplieproject/pages/profile_page.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Initialize Firebase
+  await Firebase.initializeApp();
+  final databaseRef = FirebaseDatabase.instance.reference();
+  databaseRef.child('messages').push().set({'message': 'HelloWorld'});
   runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Genius Group Application', // Fixed typo in title
+      title: 'Genius Group Application',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: MyHomePage(), // Changed to MyHomePage to show the bottom navigation
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class HomePage extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+
+  final List<Widget> _widgetOptions;
+
+  _MyHomePageState() : _widgetOptions = [
+    HomePage(), // HomePage requires sendMessage to be passed
+    Booking(),
+    play(),
+    ProfilePage(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -41,76 +57,41 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // this is the menu in the app bar I will build it later @LAITH
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {
-            // Action for the icon goes here.
-          },
-        ),
-        title: Text('Padel App'),
-        backgroundColor: Colors.blue, // Change app bar color here
+        title: const Text('Genius Group Application'),
+        backgroundColor: Colors.blue,
       ),
-      backgroundColor: Colors.transparent,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF4E80D1), // Start color
-              Color(0xFFC2E9FB), // End color
-            ],
-            stops: [0.0, 1.0],
-            tileMode: TileMode.clamp,
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'image/s1.webp',
-                width: 500, // Adjust width as needed
-                height: 500, // Adjust height as needed
-              ),
-              SizedBox(height: 20), // Add spacing between image and button
-              ElevatedButton(
-                onPressed: () {
-                  sendMessage(context);
-                },
-                child: Text(
-                  'Send Message to Database',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-            ],
-          ),
-        ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomNavBar(
-        selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event),
+            label: 'Booking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sports_tennis),
+            label: 'Play',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.amber,
+        unselectedItemColor: Colors.black,
+        selectedFontSize: 14.0,
+        unselectedFontSize: 12.0,
+        iconSize: 28.0,
+        backgroundColor: Colors.blue,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
-  }
-
-  Future<void> sendMessage(BuildContext context) async {
-    try {
-      DatabaseReference messageRef = FirebaseDatabase.instance.reference().child('messages');
-      String? messageId = messageRef.push().key;
-      await messageRef.child(messageId!).set({
-        'text': 'Second try',
-        'timestamp': ServerValue.timestamp,
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Message sent successfully')),
-      );
-    } catch (e) {
-      print('Error sending message: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to send message')),
-      );
-    }
   }
 }
