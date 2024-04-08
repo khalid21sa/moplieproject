@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ImageDecoration.dart';
+import 'imageCaption.dart';
 
 
 class Booking extends StatelessWidget {
@@ -12,16 +13,22 @@ class Booking extends StatelessWidget {
           children: const <Widget>[
             SizedBox(height: 20),
             ImageDecoration(imagePath: "f1.jpg"),
+            imageCaption(caption: "Laith"),
             SizedBox(height: 20),
             ImageDecoration(imagePath: "s1.webp"),
+            imageCaption(caption: "Laith"),
             SizedBox(height: 20),
             ImageDecoration(imagePath: "f5.jpeg"),
+            imageCaption(caption: "Laith"),
             SizedBox(height: 20),
             ImageDecoration(imagePath: "f6.jpg"),
+            imageCaption(caption: "Laith"),
             SizedBox(height: 20),
             ImageDecoration(imagePath: "f1.jpg"),
+            imageCaption(caption: "Laith"),
             SizedBox(height: 20),
             ImageDecoration(imagePath: "f2.jpeg"),
+            imageCaption(caption: "Laith"),
             SizedBox(height: 20),
           ],
         ),
