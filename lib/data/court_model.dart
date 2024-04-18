@@ -6,38 +6,28 @@ class Court {
 }
 
 class CourtData {
-  String? imagePath;
   String? name;
+  String? imagePath;
   String? place;
   double? ticketPrice;
-  double? latitude;
-  double? longitude;
-  double? starRating;
 
 
-  CourtData(this.imagePath, this.name, this.place, this.ticketPrice, this.latitude, this.longitude, this.starRating);
+  CourtData( this.name, this.imagePath, this.place, this.ticketPrice);
 
   Map<String, dynamic> toJson() {
     return {
-      "image": imagePath,
       "name": name,
+      "image": imagePath,
       "place": place,
       "ticket_price": ticketPrice,
-      'latitude': latitude,
-      'longitude': longitude,
-      'starRating': starRating,
-
     };
   }
 
   CourtData.fromJson(Map<dynamic, dynamic> json) {
-    imagePath = json["image"];
     name = json["name"];
+    imagePath = json["image"];
     place = json["place"];
     ticketPrice = checkDouble(json["ticket_price"]);
-    latitude = checkDouble(json['latitude']);
-    longitude = checkDouble(json['longitude']);
-    starRating = checkDouble(json['starRating']);
   }
 
   double? checkDouble(value) {

@@ -1,0 +1,165 @@
+//FIREBASE
+
+1.Run flutter doctor
+2.create flutter project
+3.check emulators
+4.flutter run
+5.sign on to firebase console
+6.give firebase name
+7.continue
+8.ues default account then continue
+9.continue
+10.choose android
+11A. Android *manifest file* and take package name
+it's always named like this *com.example.name*
+11B.and i need to edit the "AndroidManifest.xml" file D:\mobileapp\android\app\src\main\AndroidManifest.xml
+like this:
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.mobileapp">
+11C.Enter the correct Android package name and click "Register app"
+12.Download the google-services.json file and save it into the /flutterproject/android/app/
+
+13.edit "android/build.gradle"
+//androidproject/build.gradle
+////////////////////////////////////////////////////////////////////////
+buildscript {
+    ext.kotlin_version = '1.7.10'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.google.gms:google-services:4.3.15"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+***14-15.edit "android/app/build.gradle"***
+//androidproject/app/build.gradle
+////////////////////////////////////////////////////////////////////////////////////////////////////
+plugins {
+    id "com.android.application"
+    id 'com.google.gms.google-services'
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+android {
+    namespace "com.example.flutter_crud_sp24"
+    compileSdkVersion flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.example.flutter_crud_sp24"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+16.run then get error
+17.To address the error shown in the previous slide, make sure to set the minSDKVersion to 19
+In the app-level “android/app/build.gradle” file. Then, re-run your app.
+minSdkversion 19
+18.create realtime database
+19.accept defaults and click next
+20.select "start test mode" and click enable
+21. realtime database now is ready
+and make edit rules and  change them to true
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+  }
+}
+22.add this code in pubspec:
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^1.10.6
+  firebase_database: ^9.0.2
+
+23.Run “flutter pub get” using the command line.
+24.Modify the main.dart file to include the code shown below:
+25.run and get this error:
+/C:/Users/hoora/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-1.24.0/lib/src/firebase_app.dart:18:25: Error: Member not found: 'FirebaseAppPlatform.verifyExtends'.
+    FirebaseAppPlatform.verifyExtends(_delegate);
+                        ^^^^^^^^^^^^^
+26.to fix it run this flutter pub upgrade --major-versions
+27.run it again
+28.To verify that we can write data into our Realtime database, modify your main.dart file so
+that it includes the code shown below:
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  final databaseRef = FirebaseDatabase.instance.reference();
+  databaseRef.child('messages').push().set({'message': 'HelloWorld'});
+  runApp(const MyApp());
+}
+
+29. run it and see it in the firebase realtime database

@@ -1,0 +1,201 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Court, CourtData
+class Court {
+  String? key;
+  CourtData? courtData;
+
+  Court(this.key, this.courtData);
+}
+
+class CourtData {
+  String? imagePath;
+  String? name;
+  String? place;
+  double? ticketPrice;
+  double? latitude;
+  double? longitude;
+  double? starRating;
+
+
+  CourtData(this.imagePath, this.name, this.place, this.ticketPrice, this.latitude, this.longitude, this.starRating);
+
+  Map<String, dynamic> toJson() {
+    return {
+      "image": imagePath,
+      "name": name,
+      "place": place,
+      "ticket_price": ticketPrice,
+      'latitude': latitude,
+      'longitude': longitude,
+      'starRating': starRating,
+
+    };
+  }
+
+  CourtData.fromJson(Map<dynamic, dynamic> json) {
+    imagePath = json["image"];
+    name = json["name"];
+    place = json["place"];
+    ticketPrice = checkDouble(json["ticket_price"]);
+    latitude = checkDouble(json['latitude']);
+    longitude = checkDouble(json['longitude']);
+    starRating = checkDouble(json['starRating']);
+  }
+
+  double? checkDouble(value) {
+    if (value is String) {
+      return double.parse(value);
+    } else if (value is double) {
+      return value;
+    } else if (value is int) {
+      return double.parse(value.toString());
+    } else {
+      return 0.0;
+    }
+  }
+
+  int? checkInteger(established) {
+    if (established is String) {
+      return int.parse(established);
+    } else if (established is double) {
+      return int.parse(established.toString());
+    } else if (established is int) {
+      return established;
+    } else {
+      return 0;
+    }
+  }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//DatabaseHelper
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'court_model.dart';
+
+class DatabaseHelper {
+  static Future<void> deleteCastle(String key) async {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+    await databaseReference.child("castles").child(key).remove();
+  }
+
+  static Future<void> updateCastleData(
+      String key, CourtData castleData, BuildContext context) async {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+    await databaseReference
+        .child("castles")
+        .child(key)
+        .update(castleData.toJson()).then((_) {
+      // Show a snackbar on successful update
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Operation updated successfully')),
+      );
+    }).catchError((error) {
+      // Handle errors and show a different snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Failed to update: ${error.toString()}')),
+      );
+    });
+  }
+
+  static Future<void> addNewCastle(CourtData castleData) {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+    return databaseReference
+        .child('castles')
+        .push()
+        .set(castleData.toJson())
+        .then((value) => print("Castle created successfully!"))
+        .catchError((error) => print("Failed to create castle data: $error"));
+  }
+
+  static void readFirebaseRealtimeDBMain(
+      Function(List<Court>) castleListCallback) {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+    databaseReference.child("padlecourt").onValue.listen((castleDataJson) {
+      if (castleDataJson.snapshot.exists) {
+        CourtData castleData;
+        Court castle;
+        List<Court> castleList = [];
+        castleDataJson.snapshot.children.forEach((element) {
+//print("Element Key: ${element.key}");
+//print("Element: ${element.value}");
+          castleData = CourtData.fromJson(element.value as Map);
+          castle = Court(element.key, castleData);
+          castleList.add(castle);
+        });
+        castleListCallback(castleList);
+      } else {
+        print("The data snapshot does not exist!");
+      }
+    });
+  }
+
+  static void createFirebaseRealtimeDBWithUniqueIDs(
+      String mainNodeName, List<Map<String, dynamic>> fortList) {
+    DatabaseReference databaseReference =
+    FirebaseDatabase.instance.ref(mainNodeName);
+    if (fortList.isNotEmpty) {
+      fortList.forEach((fort) {
+        databaseReference
+            .push()
+            .set(fort)
+            .then((value) => print("FortList data successfully saved!"))
+            .catchError((error) => print("Failed to write message: $error"));
+      });
+    } else {
+      print("Fortlist is empty!");
+    }
+  }
+
+  static void writeMessageToFirebase() {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    databaseReference
+        .child('messages')
+        .set({'message': 'HelloWorld'})
+        .then((value) => print("Message written successfully"))
+        .catchError((error) => print("Failed to write message: $error"));
+  }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// List
+List<Map<String,dynamic>> fortList = [
+  {
+    'name':'Muscat Hills',
+    'image':'f1.jpg',
+    'place':'Muscat',
+    'ticket_price':20,
+  },
+  {
+    'name':'Big Wall',
+    'image':'f2.jpeg',
+    'place':'Izki',
+    'ticket_price':15,
+  },
+  {
+    'name':'The Fort',
+    'image':'f5.jpeg',
+    'place':'Al Rustaq',
+    'ticket_price':18,
+  },
+  {
+    'name':'Mountain',
+    'image':'f6.jpg',
+    'place':'Ibra',
+    'ticket_price':10,
+  },
+  {
+    'name':'The Desert',
+    'image':'s1.webp',
+    'place':'Manah',
+    'ticket_price':8,
+  },
+  {
+    'name':'The Shore',
+    'image':'f1.jpg',
+    'place':'Al Suwiq',
+    'ticket_price':15,
+  },
+];
+

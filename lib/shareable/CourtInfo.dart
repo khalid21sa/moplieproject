@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../data/court_model.dart';
 
 
-class MyRoundedCastleInfo extends StatelessWidget {
+class CourtInfo extends StatelessWidget {
   final Court? court;
 
-  const MyRoundedCastleInfo({super.key, required this.court});
+  const CourtInfo({super.key, required this.court});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class MyRoundedCastleInfo extends StatelessWidget {
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                               ),
                               Text(
-                                "Year:",
+                                "Price:",
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                               ),
                             ],
