@@ -2,9 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:moplieproject/screens/booking_page.dart';
 import 'package:moplieproject/screens/home_page.dart';
-import 'package:moplieproject/screens/play_page.dart';
 import 'package:moplieproject/screens/profile_page.dart';
 import 'package:moplieproject/shareable/DynamicScreen.dart';
 import 'data/DatabaseHelper.dart';
@@ -90,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.amber,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: Colors.white,
         selectedFontSize: 14.0,
         unselectedFontSize: 12.0,
         iconSize: 28.0,

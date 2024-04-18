@@ -8,38 +8,28 @@ class Court {
 }
 
 class CourtData {
-  String? imagePath;
   String? name;
+  String? imagePath;
   String? place;
   double? ticketPrice;
-  double? latitude;
-  double? longitude;
-  double? starRating;
 
 
-  CourtData(this.imagePath, this.name, this.place, this.ticketPrice, this.latitude, this.longitude, this.starRating);
+  CourtData( this.name, this.imagePath, this.place, this.ticketPrice);
 
   Map<String, dynamic> toJson() {
     return {
-      "image": imagePath,
       "name": name,
+      "image": imagePath,
       "place": place,
       "ticket_price": ticketPrice,
-      'latitude': latitude,
-      'longitude': longitude,
-      'starRating': starRating,
-
     };
   }
 
   CourtData.fromJson(Map<dynamic, dynamic> json) {
-    imagePath = json["image"];
     name = json["name"];
+    imagePath = json["image"];
     place = json["place"];
     ticketPrice = checkDouble(json["ticket_price"]);
-    latitude = checkDouble(json['latitude']);
-    longitude = checkDouble(json['longitude']);
-    starRating = checkDouble(json['starRating']);
   }
 
   double? checkDouble(value) {
@@ -73,19 +63,18 @@ import 'package:flutter/material.dart';
 import 'court_model.dart';
 
 class DatabaseHelper {
-  static Future<void> deleteCastle(String key) async {
+  static Future<void> delete(String key) async {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
-    await databaseReference.child("castles").child(key).remove();
+    await databaseReference.child("courts").child(key).remove();
   }
 
-  static Future<void> updateCastleData(
+  static Future<void> update(
       String key, CourtData castleData, BuildContext context) async {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     await databaseReference
-        .child("castles")
+        .child("courts")
         .child(key)
         .update(castleData.toJson()).then((_) {
-      // Show a snackbar on successful update
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Operation updated successfully')),
@@ -100,13 +89,13 @@ class DatabaseHelper {
     });
   }
 
-  static Future<void> addNewCastle(CourtData castleData) {
+  static Future<void> addNew(CourtData castleData) {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     return databaseReference
-        .child('castles')
+        .child('courts')
         .push()
         .set(castleData.toJson())
-        .then((value) => print("Castle created successfully!"))
+        .then((value) => print("Courts created successfully!"))
         .catchError((error) => print("Failed to create castle data: $error"));
   }
 
@@ -119,8 +108,6 @@ class DatabaseHelper {
         Court castle;
         List<Court> castleList = [];
         castleDataJson.snapshot.children.forEach((element) {
-//print("Element Key: ${element.key}");
-//print("Element: ${element.value}");
           castleData = CourtData.fromJson(element.value as Map);
           castle = Court(element.key, castleData);
           castleList.add(castle);
@@ -141,11 +128,11 @@ class DatabaseHelper {
         databaseReference
             .push()
             .set(fort)
-            .then((value) => print("FortList data successfully saved!"))
+            .then((value) => print("CourtList data successfully saved!"))
             .catchError((error) => print("Failed to write message: $error"));
       });
     } else {
-      print("Fortlist is empty!");
+      print("CourtList is empty!");
     }
   }
 
@@ -163,39 +150,40 @@ class DatabaseHelper {
 List<Map<String,dynamic>> fortList = [
   {
     'name':'Muscat Hills',
-    'image':'f1.jpg',
+    'imagePath':'f1.jpg',
     'place':'Muscat',
     'ticket_price':20,
   },
   {
     'name':'Big Wall',
-    'image':'f2.jpeg',
+    'imagePath':'f2.jpeg',
     'place':'Izki',
     'ticket_price':15,
   },
   {
     'name':'The Fort',
-    'image':'f5.jpeg',
+    'imagePath':'f5.jpeg',
     'place':'Al Rustaq',
     'ticket_price':18,
   },
   {
     'name':'Mountain',
-    'image':'f6.jpg',
+    'imagePath':'f6.jpg',
     'place':'Ibra',
     'ticket_price':10,
   },
   {
     'name':'The Desert',
-    'image':'s1.webp',
+    'imagePath':'s1.webp',
     'place':'Manah',
     'ticket_price':8,
   },
   {
     'name':'The Shore',
-    'image':'f1.jpg',
+    'imagePath':'f1.jpg',
     'place':'Al Suwiq',
     'ticket_price':15,
   },
 ];
+
 

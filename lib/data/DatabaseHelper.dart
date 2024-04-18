@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'court_model.dart';
 
 class DatabaseHelper {
-  static Future<void> deleteCastle(String key) async {
+  static Future<void> delete(String key) async {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
-    await databaseReference.child("castles").child(key).remove();
+    await databaseReference.child("courts").child(key).remove();
   }
 
-  static Future<void> updateCastleData(
+  static Future<void> update(
       String key, CourtData castleData, BuildContext context) async {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     await databaseReference
-        .child("castles")
+        .child("courts")
         .child(key)
         .update(castleData.toJson()).then((_) {
       // Show a snackbar on successful update
@@ -30,13 +30,13 @@ class DatabaseHelper {
     });
   }
 
-  static Future<void> addNewCastle(CourtData castleData) {
+  static Future<void> addNew(CourtData castleData) {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     return databaseReference
-        .child('castles')
+        .child('courts')
         .push()
         .set(castleData.toJson())
-        .then((value) => print("Castle created successfully!"))
+        .then((value) => print("Courts created successfully!"))
         .catchError((error) => print("Failed to create castle data: $error"));
   }
 
@@ -71,11 +71,11 @@ class DatabaseHelper {
         databaseReference
             .push()
             .set(fort)
-            .then((value) => print("FortList data successfully saved!"))
+            .then((value) => print("CourtList data successfully saved!"))
             .catchError((error) => print("Failed to write message: $error"));
       });
     } else {
-      print("Fortlist is empty!");
+      print("CourtList is empty!");
     }
   }
 
