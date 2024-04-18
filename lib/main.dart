@@ -9,16 +9,18 @@ import 'package:moplieproject/pages/home_page.dart';
 import 'package:moplieproject/pages/play_page.dart';
 import 'package:moplieproject/pages/profile_page.dart';
 
+import 'pages/data/MyTextScreen.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   final databaseRef = FirebaseDatabase.instance.reference();
   var lll=fortList;
   databaseRef.child('messages').push().set({'message': 'HelloWorld'});
   DatabaseHelper.createFirebaseRealtimeDBWithUniqueIDs('padlecourt', lll);
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(), // Changed to MyHomePage to show the bottom navigation
+      home: MyHomePage(), // Changed to MyHomePage to show the bottom navigation bar
       debugShowCheckedModeBanner: false,
     );
   }
@@ -40,13 +42,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; //this is the index of the pages through navbar
 
-  final List<Widget> _widgetOptions;
+  final List<Widget> _widgetOptions; //list that takes widgets
 
   _MyHomePageState() : _widgetOptions = [
     HomePage(), // HomePage requires sendMessage to be passed
-    Booking(),
+    MyTextScreen(),
     play(),
     ProfilePage(),
   ];

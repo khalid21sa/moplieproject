@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class HomePage extends StatelessWidget {
+
   final DatabaseReference databaseRef = FirebaseDatabase.instance.reference();
 
   void sendMessageToFirebase() {
