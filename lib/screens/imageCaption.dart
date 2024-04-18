@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:moplieproject/pages/appStyle.dart';
+import 'package:moplieproject/screens/appStyle.dart';
 
 
 class imageCaption extends StatelessWidget {

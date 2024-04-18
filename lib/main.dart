@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:moplieproject/pages/booking_page.dart';
-import 'package:moplieproject/pages/data/DatabaseHelper.dart';
-import 'package:moplieproject/pages/data/list.dart';
-import 'package:moplieproject/pages/home_page.dart';
-import 'package:moplieproject/pages/play_page.dart';
-import 'package:moplieproject/pages/profile_page.dart';
-
-import 'pages/data/MyTextScreen.dart';
+import 'package:moplieproject/screens/booking_page.dart';
+import 'package:moplieproject/screens/home_page.dart';
+import 'package:moplieproject/screens/play_page.dart';
+import 'package:moplieproject/screens/profile_page.dart';
+import 'package:moplieproject/shareable/MyDynamicImageListScreen.dart';
+import 'data/DatabaseHelper.dart';
+import 'data/MyTextScreen.dart';
+import 'data/list.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   _MyHomePageState() : _widgetOptions = [
     HomePage(), // HomePage requires sendMessage to be passed
     MyTextScreen(),
-    play(),
+    MyDynamicImageListScreen(),
     ProfilePage(),
   ];
 

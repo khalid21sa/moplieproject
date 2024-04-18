@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../data/MyTextScreen.dart';
 import 'ImageDecoration.dart';
-import 'data/MyTextScreen.dart';
 import 'imageCaption.dart';
 
 

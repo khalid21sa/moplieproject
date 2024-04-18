@@ -41,18 +41,18 @@ class DatabaseHelper {
   }
 
   static void readFirebaseRealtimeDBMain(
-      Function(List<court>) castleListCallback) {
+      Function(List<Court>) castleListCallback) {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     databaseReference.child("padlecourt").onValue.listen((castleDataJson) {
       if (castleDataJson.snapshot.exists) {
         CourtData castleData;
-        court castle;
-        List<court> castleList = [];
+        Court castle;
+        List<Court> castleList = [];
         castleDataJson.snapshot.children.forEach((element) {
 //print("Element Key: ${element.key}");
 //print("Element: ${element.value}");
           castleData = CourtData.fromJson(element.value as Map);
-          castle = court(element.key, castleData);
+          castle = Court(element.key, castleData);
           castleList.add(castle);
         });
         castleListCallback(castleList);

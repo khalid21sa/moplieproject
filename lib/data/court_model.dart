@@ -1,8 +1,8 @@
-class court {
+class Court {
   String? key;
   CourtData? courtData;
 
-  court(this.key, this.courtData);
+  Court(this.key, this.courtData);
 }
 
 class CourtData {
