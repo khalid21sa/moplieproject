@@ -10,6 +10,8 @@ import 'data/DatabaseHelper.dart';
 import 'data/MyTextScreen.dart';
 import 'data/list.dart';
 
+
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -65,7 +67,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Genius Group Application'),
         backgroundColor: Colors.blue,
       ),
-      body: Center(
+      
+      body: Center( 
+        
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
