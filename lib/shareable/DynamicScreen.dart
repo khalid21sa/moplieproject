@@ -2,8 +2,7 @@
 import 'package:flutter/material.dart';  // Basic Flutter material design visual and interaction design widgets.
 import 'package:moplieproject/data/DatabaseHelper.dart';  // Custom import for database operations, specific to your project.
 import '../data/court_model.dart';  // Importing model classes for 'Court'.
-import 'CourtInfo.dart';  // Importing a custom widget specific to your project.
-
+import 'CourtInfo.dart';
 // Definition of a StatefulWidget, which can rebuild its state when data changes.
 class DynamicScreen extends StatefulWidget {
   const DynamicScreen({super.key});  // Constructor with optional key.

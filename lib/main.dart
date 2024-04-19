@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:moplieproject/screens/AddNewCourtDataToFirebase.dart';
 import 'package:moplieproject/screens/home_page.dart';
 import 'package:moplieproject/screens/profile_page.dart';
 import 'package:moplieproject/shareable/DynamicScreen.dart';
@@ -46,8 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _MyHomePageState() : _widgetOptions = [
     HomePage(), // HomePage requires sendMessage to be passed
-    MyTextScreen(),
     DynamicScreen(),
+    AddNewCourtDataToFirebase(),
     ProfilePage(),
   ];
 
@@ -78,8 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Booking',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.sports_tennis),
-            label: 'Play',
+            icon: Icon(Icons.add),
+            label: 'add new court',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

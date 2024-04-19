@@ -30,18 +30,19 @@ class DatabaseHelper {
     });
   }
 
-  static Future<void> addNew(CourtData castleData) {
+  //this is to save CourtData object into firebase database real time
+  // it convert CourtData to json using toJson()
+  static Future<void> addNew(CourtData courtData) {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     return databaseReference
-        .child('courts')
+        .child('padlecourt') //place where the data saved in firebase
         .push()
-        .set(castleData.toJson())
+        .set(courtData.toJson())
         .then((value) => print("Courts created successfully!"))
         .catchError((error) => print("Failed to create castle data: $error"));
   }
 
-  static void readFirebaseRealtimeDBMain(
-      Function(List<Court>) castleListCallback) {
+  static void readFirebaseRealtimeDBMain(Function(List<Court>) castleListCallback) {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     databaseReference.child("padlecourt").onValue.listen((castleDataJson) {
       if (castleDataJson.snapshot.exists) {
@@ -62,8 +63,7 @@ class DatabaseHelper {
     });
   }
 
-  static void createFirebaseRealtimeDBWithUniqueIDs(
-      String mainNodeName, List<Map<String, dynamic>> fortList) {
+  static void createFirebaseRealtimeDBWithUniqueIDs(String mainNodeName, List<Map<String, dynamic>> fortList) {
     DatabaseReference databaseReference =
     FirebaseDatabase.instance.ref(mainNodeName);
     if (fortList.isNotEmpty) {
