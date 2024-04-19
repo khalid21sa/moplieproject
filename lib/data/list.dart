@@ -1,4 +1,4 @@
-List<Map<String,dynamic>> fortList = [
+List<Map<String,dynamic>> courtList = [
   {
     'name':'Muscat Hills',
     'imagePath':'f1.jpg',

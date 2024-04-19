@@ -14,9 +14,9 @@ Future<void> main() async {
   await Firebase.initializeApp();
 
   final databaseRef = FirebaseDatabase.instance.reference();
-  var lll=fortList;
+  var list = courtList;
   databaseRef.child('messages').push().set({'message': 'HelloWorld'});
-  DatabaseHelper.createFirebaseRealtimeDBWithUniqueIDs('padlecourt', lll);
+  DatabaseHelper.createFirebaseRealtimeDBWithUniqueIDs('padlecourt', list);
   runApp(MyApp());
 }
 
