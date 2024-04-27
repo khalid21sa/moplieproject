@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:moplieproject/screens/AddNewCourtDataToFirebase.dart';
+import 'package:moplieproject/screens/MyDynamicImageListScreen.dart';
+import 'package:moplieproject/screens/StaticImageListScreen.dart';
 import 'package:moplieproject/screens/home_page.dart';
 import 'package:moplieproject/screens/profile_page.dart';
 import 'package:moplieproject/shareable/DynamicScreen.dart';
@@ -48,10 +50,11 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _widgetOptions; //list that takes widgets
 
   _MyHomePageState() : _widgetOptions = [
-    HomePage(), // HomePage requires sendMessage to be passed
-    DynamicScreen(),
-    AddNewCourtDataToFirebase(),
+    //HomePage(), // HomePage requires sendMessage to be passed
     ProfilePage(),
+    MyDynamicImageListScreen(),
+    //AddNewCourtDataToFirebase(),
+    StaticImageListScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -86,10 +89,10 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.add),
             label: 'add new court',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.person),
+          //   label: 'Profile',
+          // ),
         ],
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.amber,

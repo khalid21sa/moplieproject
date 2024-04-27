@@ -1,0 +1,263 @@
+
+// main.dart
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:moplieproject/screens/AddNewCourtDataToFirebase.dart';
+import 'package:moplieproject/screens/home_page.dart';
+import 'package:moplieproject/screens/profile_page.dart';
+import 'package:moplieproject/shareable/DynamicScreen.dart';
+import 'data/DatabaseHelper.dart';
+import 'data/MyTextScreen.dart';
+import 'data/list.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  final databaseRef = FirebaseDatabase.instance.reference();
+  var list = courtList;
+  databaseRef.child('messages').push().set({'message': 'HelloWorld'});
+  DatabaseHelper.createFirebaseRealtimeDBWithUniqueIDs('padlecourt', list);
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Genius Group Application',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(), // Changed to MyHomePage to show the bottom navigation bar
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0; //this is the index of the pages through navbar
+
+  final List<Widget> _widgetOptions; //list that takes widgets
+
+  _MyHomePageState() : _widgetOptions = [
+    HomePage(), // HomePage requires sendMessage to be passed
+    DynamicScreen(),
+    AddNewCourtDataToFirebase(),
+    ProfilePage(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Genius Group Application'),
+        backgroundColor: Colors.blue,
+      ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event),
+            label: 'Booking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'add new court',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.amber,
+        unselectedItemColor: Colors.white,
+        selectedFontSize: 14.0,
+        unselectedFontSize: 12.0,
+        iconSize: 28.0,
+        backgroundColor: Colors.blue,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// DynamicScreen
+import 'package:flutter/material.dart';
+import 'package:moplieproject/data/DatabaseHelper.dart';
+import '../data/court_model.dart';
+import 'CourtInfo.dart';
+
+class DynamicScreen extends StatefulWidget {
+  const DynamicScreen({super.key});
+
+  @override
+  State<DynamicScreen> createState() => _DynamicScreenState();
+}
+
+class _DynamicScreenState extends State<DynamicScreen> {
+  List<Court> courtList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    DatabaseHelper.readFirebaseRealtimeDBMain((courtList) {
+      setState(() {
+        this.courtList = courtList;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: ListView(
+            children: [
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  for (int i = 0; i < courtList.length; i++) ...{
+                    CourtInfo(court: courtList[i]),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  }
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// CourtInfo
+import 'package:flutter/material.dart';
+import '../data/court_model.dart';
+
+class CourtInfo extends StatelessWidget {
+  final Court? court;
+  const CourtInfo({super.key, required this.court});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Container(
+        height: 475,
+        width: 0.85 * MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: Colors.teal,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                height: 250,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.lightGreenAccent,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage("image/${court?.courtData?.imagePath}"),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Stack(
+                children: [
+                  Container(
+                    height: 160,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.tealAccent,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Name:",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                              Text(
+                                "Place:",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                              Text(
+                                "Price:",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                court!.courtData!.name.toString(),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                              Text(
+                                court!.courtData!.place.toString(),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                              Text(
+                                court!.courtData!.ticketPrice.toString(),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+

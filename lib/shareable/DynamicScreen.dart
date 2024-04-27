@@ -16,7 +16,7 @@ class _DynamicScreenState extends State<DynamicScreen> {
   List<Court> courtList = [];  // Declaration of a list to hold Court objects, initially empty.
 
   @override
-  void initState() {  // Initial state setup function.
+  void initState() {  // Initial stat setup function.
     super.initState();  // Calls the initState of the superclass (State).
     DatabaseHelper.readFirebaseRealtimeDBMain((courtList) {  // Asynchronously reads data from Firebase, expecting a list of Court objects.
       setState(() {  // Triggers a rebuild of the widget in response to state changes.

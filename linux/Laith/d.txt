@@ -1,5 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Court, CourtData
+// court_model
 class Court {
   String? key;
   CourtData? courtData;
@@ -8,28 +7,41 @@ class Court {
 }
 
 class CourtData {
-  String? name;
   String? imagePath;
+  String? name;
   String? place;
+  int? yearEstablished;
   double? ticketPrice;
+  double? latitude;
+  double? longitude;
+  double? starRating;
 
 
-  CourtData( this.name, this.imagePath, this.place, this.ticketPrice);
+  CourtData(this.imagePath, this.name, this.place, this.yearEstablished,
+      this.ticketPrice, this.latitude, this.longitude, this.starRating);
 
   Map<String, dynamic> toJson() {
     return {
-      "name": name,
       "image": imagePath,
+      "name": name,
       "place": place,
+      "established": yearEstablished,
       "ticket_price": ticketPrice,
+      'latitude': latitude,
+      'longitude': longitude,
+      'starRating': starRating,
     };
   }
 
   CourtData.fromJson(Map<dynamic, dynamic> json) {
-    name = json["name"];
     imagePath = json["image"];
+    name = json["name"];
     place = json["place"];
+    yearEstablished = checkInteger(json["established"]);
     ticketPrice = checkDouble(json["ticket_price"]);
+    latitude = checkDouble(json['latitude']);
+    longitude = checkDouble(json['longitude']);
+    starRating = checkDouble(json['starRating']);
   }
 
   double? checkDouble(value) {
@@ -56,8 +68,10 @@ class CourtData {
     }
   }
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//DatabaseHelper
+
+// DatabaseHelper
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'court_model.dart';
@@ -75,6 +89,7 @@ class DatabaseHelper {
         .child("courts")
         .child(key)
         .update(castleData.toJson()).then((_) {
+      // Show a snackbar on successful update
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Operation updated successfully')),
@@ -89,18 +104,19 @@ class DatabaseHelper {
     });
   }
 
-  static Future<void> addNew(CourtData castleData) {
+  //this is to save CourtData object into firebase database real time
+  // it convert CourtData to json using toJson()
+  static Future<void> addNew(CourtData courtData) {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     return databaseReference
-        .child('courts')
+        .child('padlecourt') //place where the data saved in firebase
         .push()
-        .set(castleData.toJson())
+        .set(courtData.toJson())
         .then((value) => print("Courts created successfully!"))
         .catchError((error) => print("Failed to create castle data: $error"));
   }
 
-  static void readFirebaseRealtimeDBMain(
-      Function(List<Court>) castleListCallback) {
+  static void readFirebaseRealtimeDBMain(Function(List<Court>) castleListCallback) {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
     databaseReference.child("padlecourt").onValue.listen((castleDataJson) {
       if (castleDataJson.snapshot.exists) {
@@ -108,6 +124,8 @@ class DatabaseHelper {
         Court castle;
         List<Court> castleList = [];
         castleDataJson.snapshot.children.forEach((element) {
+//print("Element Key: ${element.key}");
+//print("Element: ${element.value}");
           castleData = CourtData.fromJson(element.value as Map);
           castle = Court(element.key, castleData);
           castleList.add(castle);
@@ -119,8 +137,7 @@ class DatabaseHelper {
     });
   }
 
-  static void createFirebaseRealtimeDBWithUniqueIDs(
-      String mainNodeName, List<Map<String, dynamic>> fortList) {
+  static void createFirebaseRealtimeDBWithUniqueIDs(String mainNodeName, List<Map<String, dynamic>> fortList) {
     DatabaseReference databaseReference =
     FirebaseDatabase.instance.ref(mainNodeName);
     if (fortList.isNotEmpty) {
@@ -145,9 +162,11 @@ class DatabaseHelper {
         .catchError((error) => print("Failed to write message: $error"));
   }
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// List
-List<Map<String,dynamic>> fortList = [
+
+// list
+List<Map<String,dynamic>> courtList = [
   {
     'name':'Muscat Hills',
     'imagePath':'f1.jpg',
@@ -186,4 +205,5 @@ List<Map<String,dynamic>> fortList = [
   },
 ];
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 

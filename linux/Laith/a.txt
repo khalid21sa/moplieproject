@@ -1,0 +1,1505 @@
+//FIREBASE
+
+1.Run flutter doctor
+2.create flutter project
+3.check emulators
+4.flutter run
+5.sign on to firebase console
+6.give firebase name
+7.continue
+8.ues default account then continue
+9.continue
+10.choose android
+11A. Android *manifest file* and take package name
+it's always named like this *com.example.name*
+11B.and i need to edit the "AndroidManifest.xml" file D:\mobileapp\android\app\src\main\AndroidManifest.xml
+like this:
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.mobileapp">
+11C.Enter the correct Android package name and click "Register app"
+12.Download the google-services.json file and save it into the /flutterproject/android/app/
+
+13.edit "android/build.gradle"
+//androidproject/build.gradle
+
+////////////////////////////////////////////////////////////////////////
+
+buildscript {
+    ext.kotlin_version = '1.7.10'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.google.gms:google-services:4.3.15"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+***14-15.edit "android/app/build.gradle"***
+//androidproject/app/build.gradle
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+plugins {
+    id "com.android.application"
+    id 'com.google.gms.google-services'
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+android {
+    namespace "com.example.flutter_crud_sp24"
+    compileSdkVersion flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.example.flutter_crud_sp24"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+16.run then get error
+17.To address the error shown in the previous slide, make sure to set the minSDKVersion to 19
+In the app-level “android/app/build.gradle” file. Then, re-run your app.
+minSdkversion 19
+18.create realtime database
+19.accept defaults and click next
+20.select "start test mode" and click enable
+21. realtime database now is ready
+and make edit rules and  change them to true
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+  }
+}
+22.add this code in pubspec:
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^1.10.6
+  firebase_database: ^9.0.2
+
+23.Run “flutter pub get” using the command line.
+24.Modify the main.dart file to include the code shown below:
+25.run and get this error:
+/C:/Users/hoora/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-1.24.0/lib/src/firebase_app.dart:18:25: Error: Member not found: 'FirebaseAppPlatform.verifyExtends'.
+    FirebaseAppPlatform.verifyExtends(_delegate);
+                        ^^^^^^^^^^^^^
+26.to fix it run this flutter pub upgrade --major-versions
+27.run it again
+28.To verify that we can write data into our Realtime database, modify your main.dart file so
+that it includes the code shown below:
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  final databaseRef = FirebaseDatabase.instance.reference();
+  databaseRef.child('messages').push().set({'message': 'HelloWorld'});
+  runApp(const MyApp());
+}
+
+29. run it and see it in the firebase realtime database
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// main.dart
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:moplieproject/screens/AddNewCourtDataToFirebase.dart';
+import 'package:moplieproject/screens/home_page.dart';
+import 'package:moplieproject/screens/profile_page.dart';
+import 'package:moplieproject/shareable/DynamicScreen.dart';
+import 'data/DatabaseHelper.dart';
+import 'data/MyTextScreen.dart';
+import 'data/list.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  final databaseRef = FirebaseDatabase.instance.reference();
+  var list = courtList;
+  databaseRef.child('messages').push().set({'message': 'HelloWorld'});
+  DatabaseHelper.createFirebaseRealtimeDBWithUniqueIDs('padlecourt', list);
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Genius Group Application',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(), // Changed to MyHomePage to show the bottom navigation bar
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0; //this is the index of the pages through navbar
+
+  final List<Widget> _widgetOptions; //list that takes widgets
+
+  _MyHomePageState() : _widgetOptions = [
+    HomePage(), // HomePage requires sendMessage to be passed
+    DynamicScreen(),
+    AddNewCourtDataToFirebase(),
+    ProfilePage(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Genius Group Application'),
+        backgroundColor: Colors.blue,
+      ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event),
+            label: 'Booking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'add new court',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.amber,
+        unselectedItemColor: Colors.white,
+        selectedFontSize: 14.0,
+        unselectedFontSize: 12.0,
+        iconSize: 28.0,
+        backgroundColor: Colors.blue,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// court_model
+class Court {
+  String? key;
+  CourtData? courtData;
+
+  Court(this.key, this.courtData);
+}
+
+class CourtData {
+  String? imagePath;
+  String? name;
+  String? place;
+  int? yearEstablished;
+  double? ticketPrice;
+  double? latitude;
+  double? longitude;
+  double? starRating;
+
+
+  CourtData(this.imagePath, this.name, this.place, this.yearEstablished,
+      this.ticketPrice, this.latitude, this.longitude, this.starRating);
+
+  Map<String, dynamic> toJson() {
+    return {
+      "image": imagePath,
+      "name": name,
+      "place": place,
+      "established": yearEstablished,
+      "ticket_price": ticketPrice,
+      'latitude': latitude,
+      'longitude': longitude,
+      'starRating': starRating,
+    };
+  }
+
+  CourtData.fromJson(Map<dynamic, dynamic> json) {
+    imagePath = json["image"];
+    name = json["name"];
+    place = json["place"];
+    yearEstablished = checkInteger(json["established"]);
+    ticketPrice = checkDouble(json["ticket_price"]);
+    latitude = checkDouble(json['latitude']);
+    longitude = checkDouble(json['longitude']);
+    starRating = checkDouble(json['starRating']);
+  }
+
+  double? checkDouble(value) {
+    if (value is String) {
+      return double.parse(value);
+    } else if (value is double) {
+      return value;
+    } else if (value is int) {
+      return double.parse(value.toString());
+    } else {
+      return 0.0;
+    }
+  }
+
+  int? checkInteger(established) {
+    if (established is String) {
+      return int.parse(established);
+    } else if (established is double) {
+      return int.parse(established.toString());
+    } else if (established is int) {
+      return established;
+    } else {
+      return 0;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// DatabaseHelper
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'court_model.dart';
+
+class DatabaseHelper {
+  static Future<void> delete(String key) async {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+    await databaseReference.child("courts").child(key).remove();
+  }
+
+  static Future<void> update(
+      String key, CourtData castleData, BuildContext context) async {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+    await databaseReference
+        .child("courts")
+        .child(key)
+        .update(castleData.toJson()).then((_) {
+      // Show a snackbar on successful update
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Operation updated successfully')),
+      );
+    }).catchError((error) {
+      // Handle errors and show a different snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Failed to update: ${error.toString()}')),
+      );
+    });
+  }
+
+  //this is to save CourtData object into firebase database real time
+  // it convert CourtData to json using toJson()
+  static Future<void> addNew(CourtData courtData) {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+    return databaseReference
+        .child('padlecourt') //place where the data saved in firebase
+        .push()
+        .set(courtData.toJson())
+        .then((value) => print("Courts created successfully!"))
+        .catchError((error) => print("Failed to create castle data: $error"));
+  }
+
+  static void readFirebaseRealtimeDBMain(Function(List<Court>) castleListCallback) {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+    databaseReference.child("padlecourt").onValue.listen((castleDataJson) {
+      if (castleDataJson.snapshot.exists) {
+        CourtData castleData;
+        Court castle;
+        List<Court> castleList = [];
+        castleDataJson.snapshot.children.forEach((element) {
+//print("Element Key: ${element.key}");
+//print("Element: ${element.value}");
+          castleData = CourtData.fromJson(element.value as Map);
+          castle = Court(element.key, castleData);
+          castleList.add(castle);
+        });
+        castleListCallback(castleList);
+      } else {
+        print("The data snapshot does not exist!");
+      }
+    });
+  }
+
+  static void createFirebaseRealtimeDBWithUniqueIDs(String mainNodeName, List<Map<String, dynamic>> fortList) {
+    DatabaseReference databaseReference =
+    FirebaseDatabase.instance.ref(mainNodeName);
+    if (fortList.isNotEmpty) {
+      fortList.forEach((fort) {
+        databaseReference
+            .push()
+            .set(fort)
+            .then((value) => print("CourtList data successfully saved!"))
+            .catchError((error) => print("Failed to write message: $error"));
+      });
+    } else {
+      print("CourtList is empty!");
+    }
+  }
+
+  static void writeMessageToFirebase() {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    databaseReference
+        .child('messages')
+        .set({'message': 'HelloWorld'})
+        .then((value) => print("Message written successfully"))
+        .catchError((error) => print("Failed to write message: $error"));
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// list
+List<Map<String,dynamic>> courtList = [
+  {
+    'name':'Muscat Hills',
+    'imagePath':'f1.jpg',
+    'place':'Muscat',
+    'ticket_price':20,
+  },
+  {
+    'name':'Big Wall',
+    'imagePath':'f2.jpeg',
+    'place':'Izki',
+    'ticket_price':15,
+  },
+  {
+    'name':'The Fort',
+    'imagePath':'f5.jpeg',
+    'place':'Al Rustaq',
+    'ticket_price':18,
+  },
+  {
+    'name':'Mountain',
+    'imagePath':'f6.jpg',
+    'place':'Ibra',
+    'ticket_price':10,
+  },
+  {
+    'name':'The Desert',
+    'imagePath':'s1.webp',
+    'place':'Manah',
+    'ticket_price':8,
+  },
+  {
+    'name':'The Shore',
+    'imagePath':'f1.jpg',
+    'place':'Al Suwiq',
+    'ticket_price':15,
+  },
+];
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//MyDynamicImageListScreen
+import 'package:flutter/material.dart';
+import 'package:moplieproject/data/court_model.dart';
+import '../data/DatabaseHelper.dart';
+import '../shareable/MyRoundedCastleInfo.dart';
+
+class MyDynamicImageListScreen extends StatefulWidget {
+  const MyDynamicImageListScreen({super.key});
+
+  @override
+  State<MyDynamicImageListScreen> createState() =>
+      _MyDynamicImageListScreenState();
+}
+
+class _MyDynamicImageListScreenState extends State<MyDynamicImageListScreen> {
+  List<Court> courtList = [];
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    DatabaseHelper.readFirebaseRealtimeDBMain((castleList) {
+      setState(() {
+        this.courtList = castleList;
+        //print(this.castleList.first.castleData?.name);
+        //print(this.castleList);
+        //print(this.castleList.first.castleData?.name);
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      //backgroundColor: Colors.black,
+      body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            //padding: const EdgeInsets.only(top: 20, bottom: 20),
+            child: ListView(
+              children: [
+                //SingleChildScrollView(
+                // scrollDirection: Axis.vertical,
+                //child: Row(
+                //child:
+                Column(
+                  children: [
+                    //const Gap(20),
+                    const SizedBox(height: 20,),
+                    for (int i = 0; i < courtList.length; i++) ...{
+                      MyRoundedCastleInfo(court: courtList[i]),
+                      const SizedBox(height: 20,),
+                      // const Gap(20),
+                    }
+                  ],
+                ),
+                //),
+              ],
+            ),
+          )),
+    );
+  }
+
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//MyRoundedCastleInfo
+import 'package:flutter/material.dart';
+import '../data/court_model.dart';
+import '../screens/CastleDetailScreen.dart';
+import '../screens/appStyle.dart';
+
+class MyRoundedCastleInfo extends StatelessWidget {
+  final Court? court;
+
+  const MyRoundedCastleInfo({super.key, required this.court});
+
+  @override
+  Widget build(BuildContext context) {
+    /*GestureDetector(
+        onTap: () {
+          if (castle != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CastleDetailScreen(castle: castle!),
+              ),
+            );
+          }
+        },*/
+    return
+      /*  GestureDetector(
+          onTap: (){
+            if (castle != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CastleDetailScreen(castle: castle!),
+                ),
+              );
+            }
+          },
+          child:*/
+
+      GestureDetector(
+        onTap: (){
+          if (court != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CastleDetailScreen(court: court!),
+                //builder: (context) => const StaticImageListScreen(),
+              ),
+            );
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Container(
+            height: 475,
+            width: 0.75 * MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Colors.purple,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Container(
+                    height: 250,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.lightGreenAccent,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage(
+                              "images/${court?.courtData?.imagePath}"),
+                        )),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 160,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.lightGreen,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Name:",
+                                    style: AppStyles.headlineStyle1,
+                                  ),
+                                  Text(
+                                    "Place:",
+                                    style: AppStyles.headlineStyle1,
+                                  ),
+                                  Text(
+                                    "Year:",
+                                    style: AppStyles.headlineStyle1,
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    court!.courtData!.name.toString(),
+                                    style: AppStyles.headlineStyle1,
+                                  ),
+                                  Text(
+                                    court!.courtData!.place.toString(),
+                                    style: AppStyles.headlineStyle1,
+                                  ),
+                                  Text(
+                                    court!.courtData!.yearEstablished
+                                        .toString(),
+                                    style: AppStyles.headlineStyle1,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    // );
+  }
+
+  //Method to navigate to the detail screen, not used in the current widget structure.
+  // goToDetail(BuildContext context) {
+  //   if (court != null) {
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => CastleDetailScreen(court: court!),
+  //       ),
+  //     );
+  //   }
+  // }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// CastleDetailScreen
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import '../data/DatabaseHelper.dart';
+import '../data/court_model.dart';
+import '../main.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'CastleCreationUpdateScreen.dart';
+import 'ImageDecoration.dart';
+import 'MyDynamicImageListScreen.dart';
+import 'StaticImageListScreen.dart';
+import 'appStyle.dart';
+
+class CastleDetailScreen extends StatefulWidget {
+  final Court court;
+
+  const CastleDetailScreen({super.key, required this.court});
+
+  @override
+  State<CastleDetailScreen> createState() => _CastleDetailScreenState();
+}
+
+class _CastleDetailScreenState extends State<CastleDetailScreen> {
+  int _ticketQuantity = 1;
+  double _ticketPrice = 0, _runningCost = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    _ticketPrice = widget.court.courtData?.ticketPrice ?? 0.0;
+    _runningCost = _ticketQuantity * _ticketPrice;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.court.courtData?.name ?? 'Castle Details'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            // Displaying the local image
+            widget.court.courtData?.imagePath != null
+                ? ImageDecoration(
+                imagePath: widget.court.courtData!.imagePath!)
+                : const SizedBox(height: 200, child: Placeholder()),
+
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Text(
+                  "Name: ",
+                  style: AppStyles.headlineStyle1,
+                ),
+                Text(
+                  widget.court.courtData?.name ?? 'N/A',
+                  style: AppStyles.headlineStyle2,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+            Text(
+              'Place: ${widget.court.courtData?.place ?? 'N/A'}',
+              style: AppStyles.headlineStyle2,
+            ),
+            Text(
+              'Established: ${widget.court.courtData?.yearEstablished ?? 'N/A'}',
+              style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.brown),
+            ),
+            Text(
+              'Ticket Price: \$${widget.court.courtData?.ticketPrice?.toStringAsFixed(2) ?? 'N/A'}',
+              style: AppStyles.headlineStyle2,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Select Ticket Quantity:',
+              style: AppStyles.headlineStyle2,
+            ),
+            Slider(
+              value: _ticketQuantity.toDouble(),
+              min: 1,
+              max: 10,
+              divisions: 9,
+              label: _ticketQuantity.round().toString(),
+              onChanged: (double value) {
+                setState(() {
+                  _ticketQuantity = value.toInt();
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Running Cost: OMR ${_runningCost.toStringAsFixed(2)}',
+              style: AppStyles.headlineStyle1,
+            ),
+            const SizedBox(height: 20),
+
+            // Add RatingBar here
+            RatingBar.builder(
+              initialRating: widget.court.courtData?.starRating ?? 0,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) =>
+              const Icon(Icons.star, color: Colors.amber),
+              onRatingUpdate: (rating) {
+                // Update the rating in the database
+                widget.court.courtData?.starRating = rating;
+                DatabaseHelper.update(
+                    widget.court.key!, widget.court.courtData!, context);
+              },
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(onPressed: updateCastle, child: const Text("Update")),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () => _deleteCastle(),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min, // Use min size for the Row
+                children: [
+                  Icon(Icons.delete), // Delete icon
+                  SizedBox(width: 8), // Space between icon and text
+                  Text('Delete Castle'), // Button text
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.home),
+                  const SizedBox(width: 8),
+                  Text("Back to Main", style: AppStyles.headlineStyle2,)
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _deleteCastle() {
+    // FirebaseDatabase.instance.ref("castles").child(widget.castle.key!).remove();
+
+    if (widget.court.key != null && widget.court.courtData?.name != null) {
+      String castleName = widget.court.courtData!.name!;
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Confirm Deletion'),
+            content:
+            Text('Are you sure you want to delete the castle $castleName?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+              TextButton(
+                onPressed: (){
+                  DatabaseHelper.delete(widget.court.key!);
+                  Navigator.of(context).pop(); // Close the dialog
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('$castleName castle deleted')),
+                  );
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyDynamicImageListScreen()),
+                        (Route<dynamic> route) => false,
+                  );
+                },
+                child: const Text('Delete'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+
+  void updateCastle() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>  CastleCreationUpdateScreen(isUpdate: true, court: widget.court,),
+      ),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// CastleCreationUpdateScreen
+import 'package:flutter/material.dart';
+import '../data/DatabaseHelper.dart';
+import '../data/court_model.dart';
+import '../main.dart';
+
+class CastleCreationUpdateScreen extends StatefulWidget {
+  final bool isUpdate;
+  final Court? court;
+
+  const CastleCreationUpdateScreen(
+      {super.key, required this.isUpdate, this.court});
+
+  @override
+  State<CastleCreationUpdateScreen> createState() =>
+      _CastleCreationUpdateScreenState();
+}
+
+class _CastleCreationUpdateScreenState
+    extends State<CastleCreationUpdateScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _placeController = TextEditingController();
+  final _establishedController = TextEditingController();
+  final _imageController = TextEditingController();
+  final _ticketPriceController = TextEditingController();
+  final _latitudeController = TextEditingController();
+  final _longitudeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isUpdate && widget.court != null) {
+      // Pre-fill form fields if isUpdate is true and castle is provided
+      _nameController.text = widget.court!.courtData?.name ?? '';
+      _placeController.text = widget.court!.courtData?.place ?? '';
+      _establishedController.text =
+          widget.court!.courtData?.yearEstablished.toString() ?? '';
+      _imageController.text = widget.court!.courtData?.imagePath ?? '';
+      _ticketPriceController.text =
+          widget.court!.courtData?.ticketPrice.toString() ?? '';
+      _latitudeController.text =
+          widget.court!.courtData?.latitude.toString() ?? '';
+      _longitudeController.text =
+          widget.court!.courtData?.longitude.toString() ?? '';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Create New Castle")),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
+          children: <Widget>[
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Castle Name',
+                prefixIcon: Icon(Icons.castle),
+              ),
+              keyboardType: TextInputType.text,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter castle name';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _placeController,
+              decoration: const InputDecoration(
+                labelText: 'Location',
+                prefixIcon: Icon(Icons.location_on),
+              ),
+              keyboardType: TextInputType.text,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the location';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _establishedController,
+              decoration: const InputDecoration(
+                labelText: 'Year Established',
+                prefixIcon: Icon(Icons.calendar_today),
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the year the castle was established';
+                }
+                if (int.tryParse(value) == null ||
+                    (int.tryParse(value)!) <= 0) {
+                  return 'Please enter a valid year';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _imageController,
+              decoration: const InputDecoration(
+                labelText: 'Image URL',
+                prefixIcon: Icon(Icons.image),
+              ),
+              keyboardType: TextInputType.text,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter an image URL';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _ticketPriceController,
+              decoration: const InputDecoration(
+                labelText: 'Ticket Price',
+                prefixIcon: Icon(Icons.money),
+              ),
+              keyboardType:
+              const TextInputType.numberWithOptions(decimal: true),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a ticket price';
+                }
+                if ((double.tryParse(value)!) <= 0) {
+                  return 'Please enter a valid price';
+                }
+                return null;
+              },
+            ),
+            // Latitude TextFormField
+            TextFormField(
+              controller: _latitudeController,
+              decoration: const InputDecoration(
+                labelText: 'Latitude',
+                prefixIcon: Icon(Icons.map),
+              ),
+              keyboardType:
+              const TextInputType.numberWithOptions(decimal: true),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the latitude';
+                }
+
+                return null;
+              },
+            ),
+
+            // Longitude TextFormField
+            TextFormField(
+              controller: _longitudeController,
+              decoration: const InputDecoration(
+                labelText: 'Longitude',
+                prefixIcon: Icon(Icons.map),
+              ),
+              keyboardType:
+              const TextInputType.numberWithOptions(decimal: true),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the longitude';
+                }
+
+                return null;
+              },
+            ),
+            ElevatedButton(
+                onPressed: _submitForm,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Icon(Icons.update),
+                    SizedBox(width: 8,),
+                    Text("Submit")],
+                ))
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      CourtData castleData = CourtData(
+        _imageController.text,
+        _nameController.text,
+        _placeController.text,
+        int.tryParse(_establishedController.text),
+        double.tryParse(_ticketPriceController.text),
+        double.tryParse(_latitudeController.text),
+        double.tryParse(_longitudeController.text),
+        0.0,
+      );
+
+      if (widget.isUpdate) {
+        // Update the existing castle
+        DatabaseHelper.update(
+            widget.court!.key!, castleData, context);
+      } else {
+        // Add a new castle
+        DatabaseHelper.addNew(castleData);
+      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyApp()),
+      );
+
+      /*ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Castle added successfully!')),
+      );*/
+
+      //Navigator.pop(context);
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _placeController.dispose();
+    _establishedController.dispose();
+    _imageController.dispose();
+    _ticketPriceController.dispose();
+    _latitudeController.dispose();
+    _longitudeController.dispose();
+    super.dispose();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// StaticImageListScreen
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import '../shareable/ImageDecoration.dart';
+
+class StaticImageListScreen extends StatelessWidget {
+  const StaticImageListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      //appBar: ,
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: 20),
+              ImageDecoration(imagePath: "f1.jpg"),
+              SizedBox(height: 20),
+              ImageDecoration(imagePath: "f2.jpeg"),
+              SizedBox(height: 20),
+              ImageDecoration(imagePath: "f5.jpeg"),
+              SizedBox(height: 20),
+              ImageDecoration(imagePath: "f1.jpg"),
+              SizedBox(height: 20),
+              ImageDecoration(imagePath: "f6.jpg"),
+              SizedBox(height: 20),
+              ImageDecoration(imagePath: "s1.webp"),
+              SizedBox(height: 20),
+
+            ],
+          ),
+        ),
+      ),
+      //bottomNavigationBar: ,
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// DynamicScreen
+import 'package:flutter/material.dart';
+import 'package:moplieproject/data/DatabaseHelper.dart';
+import '../data/court_model.dart';
+import 'CourtInfo.dart';
+
+class DynamicScreen extends StatefulWidget {
+  const DynamicScreen({super.key});
+
+  @override
+  State<DynamicScreen> createState() => _DynamicScreenState();
+}
+
+class _DynamicScreenState extends State<DynamicScreen> {
+  List<Court> courtList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    DatabaseHelper.readFirebaseRealtimeDBMain((courtList) {
+      setState(() {
+        this.courtList = courtList;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: ListView(
+            children: [
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  for (int i = 0; i < courtList.length; i++) ...{
+                    CourtInfo(court: courtList[i]),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  }
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// CourtInfo
+import 'package:flutter/material.dart';
+import '../data/court_model.dart';
+
+class CourtInfo extends StatelessWidget {
+  final Court? court;
+  const CourtInfo({super.key, required this.court});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Container(
+        height: 475,
+        width: 0.85 * MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: Colors.teal,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                height: 250,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.lightGreenAccent,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage("image/${court?.courtData?.imagePath}"),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Stack(
+                children: [
+                  Container(
+                    height: 160,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.tealAccent,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Name:",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                              Text(
+                                "Place:",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                              Text(
+                                "Price:",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                court!.courtData!.name.toString(),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                              Text(
+                                court!.courtData!.place.toString(),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                              Text(
+                                court!.courtData!.ticketPrice.toString(),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// ImageDecoration
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+
+class ImageDecoration extends StatelessWidget {
+  final String imagePath;
+
+  const ImageDecoration({super.key, required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      width: 0.8 * MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.0),
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage("image/$imagePath"),
+          ),
+          border: Border.all(width: 6, color: Colors.green),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.red,
+              blurRadius: 4,
+              spreadRadius: 4.5,
+              blurStyle: BlurStyle.solid,
+            )
+          ]),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//
+import 'dart:ui';
+import 'package:flutter/material.dart';
+
+class AppStyles{
+
+  static TextStyle headlineStyle1 = const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.brown);
+  static TextStyle headlineStyle2 = const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.brown);
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// pubspec
+name: moplieproject
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^2.25.5
+  firebase_database: ^10.4.7
+  flutter_rating_bar: ^4.0.1
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+
+  gap: ^2.0.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^3.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+  assets:
+    - image/
+    - images/
+
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  # assets:
+  #   - images/a_dot_burr.jpeg
+  #   - images/a_dot_ham.jpeg
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
